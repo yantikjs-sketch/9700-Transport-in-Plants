@@ -1,0 +1,6 @@
+{
+  "name": "Cambridge Biology 9700: Plant Transport Master",
+  "description": "Interactive learning and exam revision suite for Cambridge AS Level Biology (9700) Topic 7: Transport in Plants, featuring interactive animations, tissue explorer, virtual potometer lab, mass flow simulator, and past paper style exam questions with mark schemes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

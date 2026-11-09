@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+}
+
+/* Botanical Theme Backgrounds */
+
+/* 1. Lush Botanical Garden (Default) */
+.theme-botanical {
+  background-color: #f5f9f6;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.11) 0px, transparent 40%),
+    radial-gradient(at 50% 30%, rgba(5, 150, 105, 0.05) 0px, transparent 55%),
+    radial-gradient(at 90% 85%, rgba(245, 158, 11, 0.06) 0px, transparent 40%),
+    radial-gradient(at 10% 90%, rgba(20, 184, 166, 0.09) 0px, transparent 45%);
+}
+
+/* 2. Confocal Microscope (Fluorescent Dark Field) */
+.theme-microscope {
+  background-color: #040e0b;
+  background-image:
+    radial-gradient(at 10% 5%, rgba(16, 185, 129, 0.22) 0px, transparent 45%),
+    radial-gradient(at 90% 10%, rgba(6, 182, 212, 0.18) 0px, transparent 40%),
+    radial-gradient(at 50% 50%, rgba(5, 150, 105, 0.10) 0px, transparent 60%),
+    radial-gradient(at 85% 85%, rgba(234, 179, 8, 0.12) 0px, transparent 45%),
+    radial-gradient(at 15% 90%, rgba(20, 184, 166, 0.15) 0px, transparent 50%);
+  color: #e2e8f0;
+}
+
+/* 3. Cambridge Exam Parchment (Clean Graph Grid) */
+.theme-parchment {
+  background-color: #faf8f2;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(180, 83, 9, 0.04) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+}
+
+/* Plant Cellular Lattice Grid Background Pattern */
+.bg-plant-cells {
+  background-image: url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 0 L52 14 L52 42 L28 56 L4 42 L4 14 Z' fill='none' stroke='%23059669' stroke-width='0.75' stroke-opacity='0.045' stroke-dasharray='2 2'/%3E%3Cpath d='M28 0 L28 56' fill='none' stroke='%23059669' stroke-width='0.5' stroke-opacity='0.03'/%3E%3Cpath d='M4 14 L52 42' fill='none' stroke='%23059669' stroke-width='0.5' stroke-opacity='0.02'/%3E%3C/svg%3E");
+}
+
+.theme-microscope .bg-plant-cells {
+  background-image: url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 0 L52 14 L52 42 L28 56 L4 42 L4 14 Z' fill='none' stroke='%2310b981' stroke-width='0.75' stroke-opacity='0.09' stroke-dasharray='2 2'/%3E%3Cpath d='M28 0 L28 56' fill='none' stroke='%2306b6d4' stroke-width='0.5' stroke-opacity='0.06'/%3E%3Cpath d='M4 14 L52 42' fill='none' stroke='%2310b981' stroke-width='0.5' stroke-opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.theme-parchment .bg-plant-cells {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L40 0 L40 40 L0 40 Z' fill='none' stroke='%23059669' stroke-width='0.5' stroke-opacity='0.04'/%3E%3Cpath d='M0 20 L40 20 M20 0 L20 40' fill='none' stroke='%23059669' stroke-width='0.25' stroke-opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* Subtle Shimmer for Xylem Water Stream & Stomata */
+@keyframes xylem-flow {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-xylem-flow {
+  animation: xylem-flow 6s ease-in-out infinite;
+}
+
+/* Ambient glow orb animations */
+@keyframes ambient-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+.animate-ambient-pulse {
+  animation: ambient-pulse 8s ease-in-out infinite;
+}
+
