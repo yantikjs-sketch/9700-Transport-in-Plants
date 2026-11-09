@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PotometerMeasurement } from '../../types/biology';
 import { Play, Pause, RotateCcw, PlusCircle, Trash2, Gauge, Sun, Thermometer, Droplets, Wind, AlertCircle, CheckCircle, HelpCircle, Camera, Layers, Eye } from 'lucide-react';
+import potometerRealPhoto from '../../assets/images/potometer_apparatus_real_1794198985927.jpg';
 
 export const VirtualPotometerLab: React.FC = () => {
   // Environmental Variables
@@ -255,7 +256,17 @@ export const VirtualPotometerLab: React.FC = () => {
             <div className="p-6 bg-slate-50/80 space-y-6">
               <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
                 <img
-                  src="/src/assets/images/potometer_apparatus_real_1794198985927.jpg"
+                  src={potometerRealPhoto}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.triedPublic) {
+                      target.dataset.triedPublic = 'true';
+                      target.src = '/potometer_real_lab.jpg';
+                    } else if (!target.dataset.triedImages) {
+                      target.dataset.triedImages = 'true';
+                      target.src = '/images/potometer_real_lab.jpg';
+                    }
+                  }}
                   alt="Cambridge AS Level Biology Ganong Bubble Potometer Laboratory Setup"
                   className="w-full h-auto object-cover max-h-[500px]"
                 />
