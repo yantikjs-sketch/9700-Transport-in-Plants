@@ -255,7 +255,7 @@ export const VirtualPotometerLab: React.FC = () => {
             <div className="p-6 bg-slate-50/80 space-y-6">
               <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
                 <img
-                  src="/src/assets/images/potometer_apparatus_lab_1794187109125.jpg"
+                  src="/src/assets/images/potometer_apparatus_real_1794198985927.jpg"
                   alt="Cambridge AS Level Biology Ganong Bubble Potometer Laboratory Setup"
                   className="w-full h-auto object-cover max-h-[500px]"
                 />
