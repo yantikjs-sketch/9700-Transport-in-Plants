@@ -13,7 +13,7 @@ export const VirtualPotometerLab: React.FC = () => {
   // Apparatus state & view mode
   const [apparatusView, setApparatusView] = useState<'diagram' | 'photo'>('diagram');
   const [capillaryRadiusMm, setCapillaryRadiusMm] = useState<number>(0.5); // standard 1mm diameter bore
-  const [bubblePositionMm, setBubblePositionMm] = useState<number>(10); // start at 10mm
+  const [bubblePositionMm, setBubblePositionMm] = useState<number>(0); // start at 0mm (beaker end)
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTimeSec, setElapsedTimeSec] = useState<number>(0);
   const [simSpeed, setSimSpeed] = useState<number>(2); // 1x, 2x, 5x, 10x
@@ -90,14 +90,14 @@ export const VirtualPotometerLab: React.FC = () => {
   const handleResetBubble = () => {
     setReservoirTapOpen(true);
     setTimeout(() => {
-      setBubblePositionMm(5);
+      setBubblePositionMm(0);
       setReservoirTapOpen(false);
       setElapsedTimeSec(0);
     }, 400);
   };
 
   const handleLogData = () => {
-    const dist = Math.max(0, bubblePositionMm - 5);
+    const dist = Math.max(0, bubblePositionMm);
     const volume = Math.PI * Math.pow(capillaryRadiusMm, 2) * dist;
     const timeMin = Math.max(0.1, elapsedTimeSec / 60);
     const rate = volume / timeMin;
@@ -225,29 +225,51 @@ export const VirtualPotometerLab: React.FC = () => {
 
               {/* Live Graduated Scale Tracker */}
               <div className="w-full max-w-xl mt-6 bg-white p-5 rounded-2xl border border-slate-200 shadow-md space-y-2.5">
-                <div className="flex justify-between text-sm font-mono">
-                  <span className="text-slate-700 font-bold">Bubble Meniscus Position:</span>
-                  <span className="text-teal-700 font-extrabold text-base">{bubblePositionMm.toFixed(1)} mm</span>
+                <div className="flex justify-between items-center text-sm font-mono">
+                  <span className="text-slate-700 font-bold flex items-center gap-1.5">
+                    <span>Meniscus Movement:</span>
+                    <span className="text-teal-700 font-extrabold flex items-center gap-1">
+                      <span>Towards Plant Shoot</span>
+                      <span>←</span>
+                    </span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-500 font-semibold">Distance Moved:</span>
+                    <span className="text-rose-600 font-extrabold text-base bg-rose-50 px-2.5 py-0.5 rounded-lg border border-rose-200">
+                      {bubblePositionMm.toFixed(1)} mm
+                    </span>
+                  </div>
                 </div>
                 <div className="relative w-full h-6 bg-slate-100 rounded-full border border-slate-300 overflow-hidden flex items-center">
                   <div
-                    className="absolute h-full bg-teal-500/25 border-r-2 border-teal-600 transition-all duration-200"
-                    style={{ width: `${Math.min(100, Math.max(0, bubblePositionMm))}%` }}
+                    className="absolute h-full bg-teal-500/25 border-l-2 border-teal-600 transition-all duration-200"
+                    style={{
+                      right: 0,
+                      width: `${Math.min(100, Math.max(0, bubblePositionMm))}%`
+                    }}
                   />
                   {/* Air Bubble Marker */}
                   <div
-                    className="absolute w-5 h-5 rounded-full bg-rose-500 shadow-md border-2 border-white -ml-2.5 transition-all duration-200 flex items-center justify-center"
-                    style={{ left: `${Math.min(100, Math.max(0, bubblePositionMm))}%` }}
+                    className="absolute w-5 h-5 rounded-full bg-rose-500 shadow-md border-2 border-white -mr-2.5 transition-all duration-200 flex items-center justify-center"
+                    style={{
+                      right: `${Math.min(100, Math.max(0, bubblePositionMm))}%`
+                    }}
                   >
                     <div className="w-2 h-2 bg-white rounded-full opacity-90" />
                   </div>
                 </div>
-                <div className="flex justify-between text-xs text-slate-500 font-mono font-semibold">
-                  <span>0 mm (Start)</span>
-                  <span>25 mm</span>
-                  <span>50 mm</span>
+                <div className="flex justify-between text-xs text-slate-600 font-mono font-semibold">
+                  <span className="text-emerald-700 font-bold flex items-center gap-1">
+                    <span>← 100 mm</span>
+                    <span className="text-[10px] text-slate-500">(Shoot End)</span>
+                  </span>
                   <span>75 mm</span>
-                  <span>100 mm (End of scale)</span>
+                  <span>50 mm</span>
+                  <span>25 mm</span>
+                  <span className="text-sky-700 font-bold flex items-center gap-1">
+                    <span>0 mm</span>
+                    <span className="text-[10px] text-slate-500">(Beaker Start)</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -702,8 +724,11 @@ interface PotometerSvgProps {
 }
 
 const PotometerSvg: React.FC<PotometerSvgProps> = ({ bubblePos, reservoirOpen, light, wind, isRunning }) => {
-  // Map bubble 0-100 mm to SVG X coordinates (from 175 at 0mm to 425 at 100mm)
-  const bubbleX = 175 + (bubblePos / 100) * 250;
+  // Map bubble 0-100 mm to SVG X coordinates:
+  // 0 mm (start at water beaker on right): X = 425
+  // 100 mm (end towards plant shoot on left): X = 175
+  // As the plant transpires, water is pulled towards the shoot on the left
+  const bubbleX = 425 - (bubblePos / 100) * 250;
 
   return (
     <svg viewBox="0 0 580 320" className="w-full max-w-[640px] md:max-w-[720px] h-auto select-none drop-shadow-md">
@@ -899,9 +924,9 @@ const PotometerSvg: React.FC<PotometerSvgProps> = ({ bubblePos, reservoirOpen, l
         {/* Ruler Plate (from X=170 to X=430) */}
         <rect x="170" y="210" width="260" height="34" fill="url(#rulerPlate)" stroke="#94a3b8" strokeWidth="1.5" rx="3" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.08))" />
 
-        {/* Finely spaced ticks: every 10 mm major, 5 mm medium, 2 mm minor */}
+        {/* Finely spaced ticks: every 10 mm major, 5 mm medium, 2 mm minor (0 mm at right/beaker -> 100 mm at left/shoot) */}
         {Array.from({ length: 51 }, (_, i) => i * 2).map((tick) => {
-          const tx = 175 + (tick / 100) * 250;
+          const tx = 425 - (tick / 100) * 250;
           const isMajor = tick % 10 === 0;
           const isMedium = tick % 5 === 0 && !isMajor;
 
@@ -918,9 +943,9 @@ const PotometerSvg: React.FC<PotometerSvgProps> = ({ bubblePos, reservoirOpen, l
           );
         })}
 
-        {/* Ruler Number Labels (0, 10, 20, 30, ..., 100 mm) */}
+        {/* Ruler Number Labels (0, 10, 20, 30, ..., 100 mm from right to left towards shoot) */}
         {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((num) => {
-          const nx = 175 + (num / 100) * 250;
+          const nx = 425 - (num / 100) * 250;
           return (
             <text
               key={num}
@@ -934,7 +959,7 @@ const PotometerSvg: React.FC<PotometerSvgProps> = ({ bubblePos, reservoirOpen, l
           );
         })}
         <text x="300" y="252" textAnchor="middle" className="text-[10px] font-mono fill-teal-900 font-bold uppercase tracking-wider">
-          Millimeter Scale (mm)
+          Millimeter Scale (0 mm at Beaker → 100 mm at Shoot)
         </text>
       </g>
 
@@ -943,10 +968,10 @@ const PotometerSvg: React.FC<PotometerSvgProps> = ({ bubblePos, reservoirOpen, l
         {/* Glass tube overlay */}
         <rect x="170" y="222" width="260" height="6" fill="url(#glassReflection)" stroke="#64748b" strokeWidth="1" opacity="0.6" />
 
-        {/* Direction of flow arrow on ruler */}
-        <path d="M 280,182 L 230,182 M 236,177 L 230,182 L 236,187" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="255" y="174" textAnchor="middle" className="text-[10px] font-mono fill-sky-800 font-extrabold">
-          ← Direction of Water Uptake
+        {/* Direction of flow arrow pointing TOWARDS THE PLANT SHOOT (LEFT) */}
+        <path d="M 330,180 L 270,180 M 278,175 L 270,180 L 278,185" stroke="#0284c7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <text x="300" y="172" textAnchor="middle" className="text-[11px] font-mono fill-sky-800 font-extrabold">
+          ← Direction of Water Uptake (Towards Shoot)
         </text>
 
         {/* Moving Air Bubble inside Capillary Tube */}
